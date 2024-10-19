@@ -15,52 +15,48 @@ Output: 4
 1 5 10
 */
 
-#include<bits/stdc++.h>
-using namespace std;
-
-bool Comperator(int x,int a[],int n,int k){// We want to know if we can get at least x distance with k cows
-    int currentCows = 1;
-    int leftmost = 0;
-    
-    for(int i=1;i<n;++i){
-        if(a[i] - a[leftmost] >= x){
-            leftmost = i;
-            ++currentCows;
-            if(currentCows == k)
-            	return 1;
-        }
-    }
-    return 0;
-}
-
-int main()
-{
-    int t;	cin >> t;
-    for(int i=0;i<t;++i){
-        int n,k;cin >> n >> k;
-        int a[100000];
-        for(int j=0;j<n;++j){
-            cin >> a[j];
-        }
-
-        sort(a,a+n);
-        
-        int l = 0;
-        int r = a[n-1] - a[0] + 1;
-        // If we can do with x distance then obviosult we can do it with <=x.
-        // So We need to update it
-        //True True True True True True True . .. . . False False False ==> We want to find the last true
-        
-        while(r - l > 0){
-            int m = (l + r + 1) /2;
+private:
+    bool isPossible(int mid, vector<int> &stalls, int &k){
+        int countcows= 1;
+        int pos= stalls[0];
+        for (int i=0; i<stalls.size(); i++){
+            if(stalls[i]- pos>= mid){
+                countcows++;
+                if(countcows== k){
+                    return true;
+                }
+                pos= stalls[i];
+                
+            }
             
-            if(Comperator(m,a,n,k)==true){
-                l = m; // l is true now
-            }  
-            else 
-            	r = m-1; // R is false now
         }
-
-        cout << l << '\n';
+        return false;
     }
-}
+public:
+
+    int solve(int n, int k, vector<int> &stalls) {
+    
+      //sort the stalls
+      sort(stalls.begin(), stalls.end());
+      int maxi= INT_MIN;
+      for (int i=0; i<stalls.size(); i++){
+          maxi= max(maxi, stalls[i]);
+          
+      }
+      int s=0;
+      int e= maxi;
+      int ans= -1;
+      while(s<=e){
+          int mid= s+(e-s)/2;
+          if(isPossible(mid, stalls, k)){
+              s= mid+1;
+              ans= mid;
+          }
+          else{
+              e= mid-1;
+          }
+      }
+      
+      return ans;
+      
+    }
