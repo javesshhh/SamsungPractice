@@ -44,76 +44,76 @@ Case #1
 
 Solution:
 
-#include<iostream>
-
+#include <iostream>
+#include <vector>
+#include <stack>
 using namespace std;
 
-#define rep(i,a,n) for(int i =a; i < n; i++)
-#define repe(i,a,n) for(int i =a; i <= n; i++)
-
-int D,E,F,d,e;
-int config;
-int answer = 0;
-
-struct configuration
-{
-    int D,E,F,SPi;
-};
-configuration m[9];
-
-void solve(int index, int counta, int D, int E, int F, int cost )
-{
-
-    if(index >= config || counta == 3)
-    {
-        cost += D*d + E*e;
-        if(cost > answer)
-            answer = cost;
-        return;
-    }
-    solve(index + 1, counta, D,E,F,cost);
-
-    int i = 1;
-
-    while(true)
-    {
-        if( D - m[index].D*i >= 0 && E - m[index].E*i >=0 && F - m[index].F*i >= 0 )
-        {
-            solve(index+1,counta+1,D- m[index].D *i,E - m[index].E *i,F- m[index].F*i, cost+ m[index].SPi * i);
-            ++i;
-        }
-        else
-        {
-            break;
-        }
-    }
-    return;
-
-}
-
-int main()
-{
+int main() {
     int t;
     cin >> t;
-    repe(_cases,1,t)
-    {
 
-        answer = 0;
+    for (int _cases = 1; _cases <= t; ++_cases) {
+        int D, E, F, d, e, config, answer = 0;
         cin >> D >> E >> F >> d >> e;
-
         cin >> config;
 
-        rep(i,0,config)
-        {
-            cin >> m[i].D >> m[i].E >> m[i].F >> m[i].SPi;
-        }
-        solve(0,0,D,E,F,0);
-        cout << "Case #"<<_cases << "\n" << answer <<"\n";
+        vector<vector<int>> configs(config, vector<int>(4)); // 2D vector to store Di, Ei, Fi, SPi
 
+        for (int i = 0; i < config; ++i) {
+            cin >> configs[i][0] >> configs[i][1] >> configs[i][2] >> configs[i][3];
+        }
+
+        stack<vector<int>> st; // stack to simulate recursive exploration
+        st.push({0, D, E, F, 0, 0}); // {index, remaining D, remaining E, remaining F, current cost, configurations used}
+
+        while (!st.empty()) {
+            auto current = st.top();
+            st.pop();
+
+            int index = current[0];
+            int remainingD = current[1];
+            int remainingE = current[2];
+            int remainingF = current[3];
+            int cost = current[4];
+            int counta = current[5];
+
+            // Base case: no more configurations or 3 different configurations used
+            if (index >= config || counta == 3) {
+                cost += remainingD * d + remainingE * e;
+                answer = max(answer, cost);
+                continue;
+            }
+
+            // Explore without using current configuration
+            st.push({index + 1, remainingD, remainingE, remainingF, cost, counta});
+
+            // Explore using current configuration multiple times
+            int i = 1;
+            while (true) {
+                if (remainingD - configs[index][0] * i >= 0 && 
+                    remainingE - configs[index][1] * i >= 0 && 
+                    remainingF - configs[index][2] * i >= 0) {
+                    
+                    st.push({index + 1, 
+                             remainingD - configs[index][0] * i, 
+                             remainingE - configs[index][1] * i, 
+                             remainingF - configs[index][2] * i, 
+                             cost + configs[index][3] * i, 
+                             counta + 1});
+                    ++i;
+                } else {
+                    break;
+                }
+            }
+        }
+
+        cout << "Case #" << _cases << "\n" << answer << "\n";
     }
 
     return 0;
 }
+
 ---------------------------------------------------------------------
 
 
