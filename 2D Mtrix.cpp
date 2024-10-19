@@ -38,7 +38,7 @@ int main()
             }
             else
             {
-                dp[i][n-1].first = dp[i+1][n-1].first+(arr[i][n-1]-48);
+                dp[i][n-1].first = dp[i+1][n-1].first+(arr[i][n-1]-'0');
                 dp[i][n-1].second = 1;
             }
         }    
@@ -55,7 +55,7 @@ int main()
             }
             else
             {
-                dp[n-1][i].first = dp[n-1][i+1].first+(arr[n-1][i]-48);
+                dp[n-1][i].first = dp[n-1][i+1].first+(arr[n-1][i]-'0');
                 dp[n-1][i].second = 1;
             }
         }
@@ -84,7 +84,7 @@ int main()
                         isNoPath = true;
                         break;
                     }
-                    dp[i][j].first = maxi+(arr[i][j]-48);
+                    dp[i][j].first = maxi+(arr[i][j]-'0');
                     dp[i][j].second = path;
                 }
             }
